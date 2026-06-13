@@ -3,15 +3,16 @@ import java.util.Scanner;
 
 
 public class z1_2 {
-    private static main() {
+    public static void main(String args[]) {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Podaj liczbe: ");
         int a = scanner.nextInt();
-        System.out.println("podaj 2 liczba: ");
+        System.out.print("Podaj 2 liczba: ");
         int b = scanner.nextInt();
         System.out.println("Suma: " + (a+b));
-        System.out.println("roznica" + (a-b));
-        System.out.println("iloczyn" + (a*b));
-        System.out.println("iloraz" + (double)(a/b));
+        System.out.println("Roznica: " + (a-b));
+        System.out.println("Iloczyn: " + (a*b));
+        System.out.println("Iloraz: " + ((double)a/b));
+        scanner.close();
     }
 }
