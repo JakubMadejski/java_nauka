@@ -9,8 +9,8 @@ public class z1_3 {
             Scanner scanner = new Scanner(System.in);
             System.out.println("Podaj celciusze: ");
             int celc = scanner.nextInt();
-            double farten = celc * (9 / 5) + 32;
-            System.out.printf(farten);
+            double farten = celc * ((double)9 / 5) + 32;
+            System.out.printf("%.1f%n", farten);
             scanner.close();
     }
 }
