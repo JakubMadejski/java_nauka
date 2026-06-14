@@ -7,14 +7,21 @@ package plan_nauki.tydzien_03;
 public class z3_4 {
 
     static int sumaCyfr(int n) {
-        return 0; // TODO: ostatnia cyfra = n % 10, reszta = n / 10
-    }
+        if (n ==0) {
+            return 0;
+        }
+        return n % 10 + sumaCyfr(n/10);
+    }   
 
     static String odwroc(String s) {
-        return ""; // TODO: pierwsza litera + odwrocona reszta
+        if (s.isEmpty()) {
+            return "";
+        }
+        return odwroc(s.substring(1)) + s.charAt(0); // TODO: pierwsza litera + odwrocona reszta
     }
 
     public static void main(String[] args) {
-
+        System.out.println(sumaCyfr(1234));
+        System.out.println(odwroc("abcdefghijklmn"));
     }
 }

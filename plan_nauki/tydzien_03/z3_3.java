@@ -8,18 +8,22 @@ package plan_nauki.tydzien_03;
 public class z3_3 {
 
     static double pole(double r) {
-        return 0; // TODO
+        return (3.14)*r*r;
     }
 
     static double pole(double a, double b) {
-        return 0; // TODO
+        return a*b; 
     }
 
     static double pole(double a, double b, double c) {
-        return 0; // TODO wzor Herona: s=(a+b+c)/2, pole=sqrt(s*(s-a)*(s-b)*(s-c))
+        double s = (a+b+c)/2;
+        System.out.println(s);
+        return Math.sqrt(s*(s-a)*(s-b)*(s-c)); // TODO wzor Herona: s=(a+b+c)/2, pole=sqrt(s*(s-a)*(s-b)*(s-c))
     }
 
     public static void main(String[] args) {
-
+        System.out.println(pole(10,2));
+        System.out.println(pole(10));
+        System.out.println(pole(4,5,6));
     }
 }
