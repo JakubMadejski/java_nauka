@@ -25,5 +25,6 @@ public class z2_1 {
         } else {
             System.out.println("Nie jest wielokrotnoscia 3");
         }
+        scanner.close();
     }
 }
