@@ -43,3 +43,53 @@ s.isEmpty()       // true jeśli ""
 ```
 
 **Pułapka:** `charAt()` zwraca `char`, nie `String`. Żeby dodać do Stringa: `"" + s.charAt(0)` lub `String.valueOf(s.charAt(0))`.
+
+## 3. Klasy abstrakcyjne i polimorfizm
+
+**Pola zawsze `private`** (egzamin tego wymaga). Klasa abstrakcyjna i tak ma do nich dostęp przez metody, a podklasy przez konstruktor `super(...)`.
+
+Szkielet:
+```java
+abstract class Zwierze {
+    private String imie;      // private!
+    private int wiek;
+
+    public Zwierze(String imie, int wiek) {  // konstruktor BEZ slowa "class"
+        this.imie = imie;
+        this.wiek = wiek;
+    }
+
+    abstract String dzwiek();  // bez ciala, sam srednik - podklasa musi napisac
+
+    public void przedstawSie() {  // wspolna metoda - ma cialo, wola dzwiek()
+        System.out.println("Jestem " + imie + ", mowie " + dzwiek());
+    }
+}
+
+class Pies extends Zwierze {
+    public Pies(String imie, int wiek) {
+        super(imie, wiek);     // MUSI przekazac do rodzica - inaczej blad kompilacji
+    }
+    @Override
+    String dzwiek() { return "hau"; }   // nadpisuje po swojemu
+}
+```
+
+### Petla polimorficzna (tablica typu nadrzednego, rozne obiekty)
+```java
+Zwierze[] zwierzeta = {
+    new Pies("Rex", 3),
+    new Kot("Mruczek", 5),
+    new Krowa("Basia", 4)
+};
+for (Zwierze z : zwierzeta) {
+    z.przedstawSie();   // kazdy wola SWOJ dzwiek() - to jest polimorfizm
+}
+```
+
+**Czemu to dziala:** tablica jest typu `Zwierze[]`, ale trzyma psy/koty/krowy. W petli `z.dzwiek()` automatycznie wybiera wersje z wlasciwej podklasy. Jeden kod obsluguje wszystkie typy.
+
+**3 najczestsze bledy:**
+- konstruktor podklasy bez `super(...)` -> blad kompilacji
+- metoda abstrakcyjna z cialem `{ }` -> ma byc sam srednik
+- `new Zwierze(...)` -> NIE WOLNO, klasy abstrakcyjnej nie da sie stworzyc

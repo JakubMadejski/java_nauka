@@ -1,4 +1,5 @@
-# Tydzien 5: OOP czesc 2 - Dziedziczenie i polimorfizm
+.
+0# Tydzien 5: OOP czesc 2 - Dziedziczenie i polimorfizm
 
 ## 1. Dziedziczenie (extends)
 
