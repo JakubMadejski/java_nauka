@@ -6,7 +6,18 @@ package plan_nauki.tydzien_10;
 
 public class z10_3 {
     public static void main(String[] args) {
-        // TODO: przetestuj scenariusz: wybierz napoj, wplac, wydaj
+        Automat a = new Automat();
+
+        System.out.println("--- Poprawny scenariusz ---");
+        a.wybierzNapoj("Cola");   // Bezczynny -> NapojWybrany
+        a.wplacMonete(5.0);       // NapojWybrany -> GotowDoWydania
+        a.anuluj();               // wydaje napoj i wraca do Bezczynny
+
+        System.out.println("--- Proba zlej kolejnosci ---");
+        a.wplacMonete(2.0);       // Bezczynny - "Najpierw wybierz napoj"
+        a.wybierzNapoj("Woda");   // Bezczynny -> NapojWybrany
+        a.wybierzNapoj("Sok");    // NapojWybrany - "Juz wybrales"
+        a.anuluj();               // anuluje wybor, wraca do Bezczynny
     }
 }
 

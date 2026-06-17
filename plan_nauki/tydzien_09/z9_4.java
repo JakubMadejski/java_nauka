@@ -18,7 +18,7 @@ public class z9_4 {
         try {
             throw new java.io.IOException("brak pliku"); // symulacja bledu IO
         } catch (java.io.IOException e) {
-            // TODO: opakuj w PrzetwarzanieWyjatek i rzuc dalej
+            // lapiemy niski blad IO i opakowujemy w nasz wyjatek (e = cause)
             throw new PrzetwarzanieWyjatek("Blad przetwarzania danych", e);
         }
     }

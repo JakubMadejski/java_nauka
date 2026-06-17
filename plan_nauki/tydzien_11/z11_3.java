@@ -47,7 +47,9 @@ class WatekDodajacy extends Thread {
         while (running) {
             double liczba = rand.nextDouble();
             synchronized (stos) {
-                stos.put(liczba); // TODO: dlaczego synchronizujemy na stos, nie na this?
+                // synchronizujemy na STOS (wspolny zasob), nie na this:
+                // kazdy watek to inny obiekt, wiec zamek na this nie blokowalby pozostalych
+                stos.put(liczba);
             }
             try {
                 Thread.sleep(intervalMs);

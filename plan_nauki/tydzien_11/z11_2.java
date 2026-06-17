@@ -1,5 +1,6 @@
 package plan_nauki.tydzien_11;
 
+import java.util.HashMap;
 import java.util.Map;
 
 // Z11.2 - MapObserver (z egzaminu 2023 i 2024 - DOKLADNIE TO)
@@ -8,7 +9,19 @@ import java.util.Map;
 
 public class z11_2 {
     public static void main(String[] args) throws InterruptedException {
-        // TODO: stworz mape, uruchom MapObserver, dodaj/usun elementy
+        Map<String, Integer> mapa = new HashMap<>();
+        MapObserver obserwator = new MapObserver(mapa, 500);
+        obserwator.start();   // demon - zginie sam gdy main sie skonczy
+
+        Thread.sleep(600);
+        mapa.put("A", 1);          // rozmiar 0 -> 1, obserwator wypisze "+1"
+        Thread.sleep(600);
+        mapa.put("B", 2);
+        mapa.put("C", 3);          // 1 -> 3, wypisze "+2"
+        Thread.sleep(600);
+        mapa.remove("A");          // 3 -> 2, wypisze "-1"
+        Thread.sleep(600);
+        System.out.println("Koniec main");
     }
 }
 
@@ -35,7 +48,7 @@ class MapObserver extends Thread {
             }
             int nowyRozmiar = mapa.size();
             if (nowyRozmiar != ostatniRozmiar) {
-                // TODO: wypisz "Map zmienil rozmiar o: X" gdzie X = nowyRozmiar - ostatniRozmiar
+                System.out.println("Mapa zmienila rozmiar o: " + (nowyRozmiar - ostatniRozmiar));
                 ostatniRozmiar = nowyRozmiar;
             }
         }

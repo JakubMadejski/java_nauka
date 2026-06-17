@@ -7,7 +7,27 @@ package plan_nauki.tydzien_10;
 
 public class z10_2 {
     public static void main(String[] args) {
-        // TODO: przetestuj zmiane stanow
+        Gracz g = new Gracz("Bohater");
+
+        System.out.println("--- Start: Aktywny ---");
+        g.ruch();   // Biega szybko
+        g.skok();   // Skacze wysoko
+        g.cios();   // Pelny cios! -> przechodzi w Ranny
+
+        System.out.println("--- Teraz: Ranny ---");
+        g.ruch();   // Kuleje
+        g.skok();   // Nie moze skoczyc
+        g.cios();   // Slaby cios -> wraca do Aktywny
+
+        System.out.println("--- Znowu Aktywny ---");
+        g.ruch();   // Biega szybko
+
+        System.out.println("--- Zasypia ---");
+        g.setStatus(new Spiacy());
+        g.skok();   // Gracz spi
+        g.ruch();   // spi... (1/2)
+        g.ruch();   // spi... (2/2) -> budzi sie, Aktywny
+        g.ruch();   // Biega szybko (juz obudzony)
     }
 }
 

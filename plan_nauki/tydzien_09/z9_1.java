@@ -6,12 +6,24 @@ package plan_nauki.tydzien_09;
 
 public class z9_1 {
     public static void main(String[] args) {
-        // TODO: sprobuj stworzyc Prostokat z ujemnym wymiarem i wychwyc wyjatek
+        // poprawny prostokat - dziala normalnie
+        ProstokatZ9 ok = new ProstokatZ9(5, 3);
+        System.out.println("Pole: " + ok.pole());
+
+        // zly wymiar - rzuci wyjatek, lapiemy go w catch
+        try {
+            ProstokatZ9 zly = new ProstokatZ9(-5, 10);
+            System.out.println("Pole: " + zly.pole());   // tu NIE dojdzie
+        } catch (NiedodatniaDlugoscWyjatek e) {
+            System.out.println("Zlapano blad: " + e.getMessage());
+        }
     }
 }
 
 class NiedodatniaDlugoscWyjatek extends RuntimeException {
-    // TODO: konstruktor z komunikatem
+    public NiedodatniaDlugoscWyjatek(String komunikat) {
+        super(komunikat);   // przekazuje komunikat dalej (getMessage() go zwroci)
+    }
 }
 
 class ProstokatZ9 {
@@ -19,7 +31,10 @@ class ProstokatZ9 {
     private final double wysokosc;
 
     public ProstokatZ9(double szerokosc, double wysokosc) {
-        // TODO: sprawdz warunki, rzuc wyjatek jesli <= 0
+        if (szerokosc <= 0 || wysokosc <= 0) {
+            throw new NiedodatniaDlugoscWyjatek("Wymiary musza byc dodatnie, podano: "
+                + szerokosc + " x " + wysokosc);
+        }
         this.szerokosc = szerokosc;
         this.wysokosc = wysokosc;
     }

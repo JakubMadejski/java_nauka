@@ -8,7 +8,24 @@ import java.util.Iterator;
 
 public class z9_3 {
     public static void main(String[] args) {
-        // TODO: dodaj elementy, sprobuj usunac nieistniejacy, wychwyc i wypisz zawartosc
+        ZbiorUnikatowy<String> zbior = new ZbiorUnikatowy<>();
+        zbior.dodaj("A");
+        zbior.dodaj("B");
+        zbior.dodaj("C");
+
+        System.out.println("Usunieto: " + zbior.usun("B"));  // dziala -> B
+
+        try {
+            zbior.usun("X");   // X nie istnieje -> rzuci BrakElementuWyjatek
+        } catch (BrakElementuWyjatek e) {
+            System.out.println("Blad: " + e.getMessage());
+            // wyjatek niesie cala kolekcje - mozemy ja przejsc petla:
+            System.out.print("Zawartosc zbioru w chwili bledu: ");
+            for (Object o : e.getZawartosc()) {
+                System.out.print(o + " ");
+            }
+            System.out.println();
+        }
     }
 }
 
@@ -28,12 +45,31 @@ class ZbiorUnikatowy<T> implements Iterable<T> {
     private int rozmiar = 0;
 
     public void dodaj(T x) {
-        // TODO: brak duplikatow, null -> IllegalArgumentException
+        if (x == null) {
+            throw new IllegalArgumentException("Nie mozna dodac null");
+        }
+        for (int i = 0; i < rozmiar; i++) {
+            if (dane[i].equals(x)) return;   // duplikat - ignoruj
+        }
+        dane[rozmiar] = x;
+        rozmiar++;
     }
 
     public T usun(T x) {
-        // TODO: znajdz i usun; jezeli nie ma -> throw new BrakElementuWyjatek("...", this)
-        return null;
+        for (int i = 0; i < rozmiar; i++) {
+            if (dane[i].equals(x)) {
+                @SuppressWarnings("unchecked")
+                T usuniety = (T) dane[i];
+                for (int j = i; j < rozmiar - 1; j++) {
+                    dane[j] = dane[j + 1];
+                }
+                dane[rozmiar - 1] = null;
+                rozmiar--;
+                return usuniety;
+            }
+        }
+        // nie znaleziono -> rzuc wyjatek, przekazujac CALA kolekcje (this)
+        throw new BrakElementuWyjatek("Brak elementu: " + x, this);
     }
 
     public int rozmiar() { return rozmiar; }

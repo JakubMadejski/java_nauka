@@ -7,7 +7,16 @@ package plan_nauki.tydzien_09;
 
 public class z9_2 {
     public static void main(String[] args) {
-        // TODO: rzuc i wychwyc, wypisz getMessage() i kazdy getter
+        try {
+            // rzucamy wyjatek z konkretnymi danymi
+            throw new NieprawidlowaLiniaWyjatek("dane.csv", 42, "abc;;xyz");
+        } catch (NieprawidlowaLiniaWyjatek e) {
+            System.out.println("Komunikat: " + e.getMessage());
+            // a TERAZ czytamy poszczegolne dane przez gettery:
+            System.out.println("Plik:      " + e.getNazwaPliku());
+            System.out.println("Linia nr:  " + e.getNumerLinii());
+            System.out.println("Zawartosc: " + e.getZawartosc());
+        }
     }
 }
 
@@ -17,7 +26,7 @@ class NieprawidlowaLiniaWyjatek extends RuntimeException {
     private final String zawartosc;
 
     public NieprawidlowaLiniaWyjatek(String nazwaPliku, int numerLinii, String zawartosc) {
-        super(""); // TODO: komunikat zawierajacy wszystkie 3 dane
+        super("Wyjebalo sie w chuj zla nazwa pliku zny numer lini i zla zawarotxsc zjebie co to podal"+nazwaPliku+" "+numerLinii+" "+zawartosc); // TODO: komunikat zawierajacy wszystkie 3 dane
         this.nazwaPliku = nazwaPliku;
         this.numerLinii = numerLinii;
         this.zawartosc = zawartosc;

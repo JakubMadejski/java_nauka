@@ -453,5 +453,79 @@ To dziala w parze z equals w klasie elementu: kolekcja usuwa przez equals,
 wiec element (Osoba/Produkt) MUSI miec dobry equals. Mozesz wtedy usuwac przez
 NOWY obiekt o tych samych danych: `lista.usun(new Osoba("Jan", "Nowak"))`.
 
+## 13. Watki (Thread) - podstawy + pulapki
+
+Watek = robienie czegos rownolegle, w tle. Tworzysz `extends Thread`, kod w `run()`.
+
+**start() vs run() - NAJWAZNIEJSZA pulapka:**
+```java
+w.start();   // DOBRZE - uruchamia NOWY watek (run() leci rownolegle)
+w.run();     // ZLE - to zwykle wywolanie metody, BEZ rownoleglosci!
+```
+
+**Zatrzymywanie watku - flaga `volatile`:**
+```java
+class Zegar extends Thread {
+    private volatile boolean running = true;   // volatile = widoczne miedzy watkami
+    public void run() {
+        while (running) {
+            System.out.println("tik");
+            try { Thread.sleep(500); }          // uspij na 500ms
+            catch (InterruptedException e) { Thread.currentThread().interrupt(); break; }
+        }
+    }
+    public void zatrzymaj() { running = false; }
+}
+```
+- `volatile` - bez tego inny watek moze "nie zobaczyc" zmiany flagi
+- `Thread.sleep(ms)` ZAWSZE w try/catch (rzuca InterruptedException)
+
+**synchronized - ochrona wspolnych danych (RACE CONDITION):**
+```java
+class Licznik {
+    private int wartosc = 0;
+    public synchronized void zwieksz() { wartosc++; }   // tylko 1 watek naraz
+    public synchronized int odczytaj() { return wartosc; }
+}
+```
+- bez `synchronized`: 50 watkow x 1000 = wynik LOSOWY, mniejszy niz 50000
+- czemu? `wartosc++` to 3 kroki (odczyt, +1, zapis) - watki sie "zazebiaja" i nadpisuja
+- `synchronized` = "tylko jeden watek naraz w tej metodzie", reszta czeka
+
+**synchronized na konkretnym obiekcie (gdy zasob jest z zewnatrz):**
+```java
+synchronized (stos) {   // blokuj na WSPOLNYM zasobie, NIE na this!
+    stos.put(x);
+}
+```
+`this` to kazdy watek osobno (rozne obiekty) - zamek na this nie blokuje innych.
+
+**daemon - watek w tle ktory ginie z programem:**
+```java
+watek.setDaemon(true);   // MUSI byc PRZED start()!
+watek.start();
+```
+- demon ginie sam gdy main sie konczy (bez tego program nie zakonczy sie przy while(true))
+- uzywany w obserwatorach (watek co X ms cos sprawdza)
+
+**join - poczekaj az watek skonczy:**
+```java
+for (Thread w : watki) w.join();   // main czeka az WSZYSTKIE skoncza
+System.out.println(licznik.odczytaj());   // dopiero teraz wynik jest gotowy
+```
+Bez `join()` main wypisalby wynik ZANIM watki policza -> za mala liczba.
+
+**Sciaga slow-kluczy:**
+| slowo                | znaczenie                                      |
+|----------------------|------------------------------------------------|
+| `extends Thread`     | wlasny watek                                   |
+| `run()`              | kod ktory leci w watku                         |
+| `start()`            | uruchamia watek (NIE run()!)                   |
+| `Thread.sleep(ms)`   | uspij watek (w try/catch)                      |
+| `volatile boolean`   | flaga widoczna miedzy watkami (do stop)        |
+| `synchronized`       | tylko 1 watek naraz (ochrona danych)           |
+| `setDaemon(true)`    | watek w tle, ginie z main (PRZED start())      |
+| `join()`             | poczekaj az watek skonczy                      |
+
 ---
 *PDF tej sciagi generuje sie automatycznie po kazdej zmianie.*

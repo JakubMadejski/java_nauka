@@ -20,7 +20,7 @@ class LicznikWatek extends Thread {
     public void run() {
         int n = 1;
         while (running) {
-            System.out.println("Tick: " + n++); // TODO: dodaj sleep(500)
+            System.out.println("Tick: " + n++);
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {

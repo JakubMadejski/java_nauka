@@ -6,7 +6,20 @@ package plan_nauki.tydzien_10;
 
 public class z10_1 {
     public static void main(String[] args) {
-        // TODO: przetestuj Kolo, Trojkat, Kwadrat, Szesciokat
+        // jedna klasa Figura, rozny "rodzaj" wstrzykniety przez konstruktor
+        Figura f1 = new Figura("kolo", new KoloF(), 5);
+        Figura f2 = new Figura("trojkat", new TrojkatF(), 5);
+        Figura f3 = new Figura("kwadrat", new KwadratF(), 5);
+        Figura f4 = new Figura("szesciokat", new SzesciokatF(), 5);
+
+        System.out.println(f1);   // obwod kola r=5
+        System.out.println(f2);
+        System.out.println(f3);
+        System.out.println(f4);   // Szesciokat dodany BEZ zmiany klasy Figura!
+
+        // mozna tez zmienic rodzaj w trakcie zycia obiektu:
+        f1.zmienRodzaj(new KwadratF());
+        System.out.println("po zmianie: " + f1);
     }
 }
 
@@ -15,19 +28,19 @@ interface KsztaltFigury {
 }
 
 class KoloF implements KsztaltFigury {
-    public double obliczObwod(double wielkosc) { return 0; /* TODO: 2 * Math.PI * wielkosc */ }
+    public double obliczObwod(double wielkosc) { return 2 * Math.PI * wielkosc; }
 }
 
 class TrojkatF implements KsztaltFigury {
-    public double obliczObwod(double wielkosc) { return 0; /* TODO: 3 * wielkosc */ }
+    public double obliczObwod(double wielkosc) { return 3 * wielkosc; }
 }
 
 class KwadratF implements KsztaltFigury {
-    public double obliczObwod(double wielkosc) { return 0; /* TODO: 4 * wielkosc */ }
+    public double obliczObwod(double wielkosc) { return 4 * wielkosc; }
 }
 
-class SzesciokатF implements KsztaltFigury {
-    public double obliczObwod(double wielkosc) { return 0; /* TODO: 6 * wielkosc */ }
+class SzesciokatF implements KsztaltFigury {
+    public double obliczObwod(double wielkosc) { return 6 * wielkosc; }
 }
 
 class Figura {
