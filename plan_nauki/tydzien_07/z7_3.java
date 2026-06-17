@@ -1,5 +1,9 @@
 package plan_nauki.tydzien_07;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Objects;
+
 // Z7.3 - Klasa Uczen (PRAWDZIWE ZADANIE z egzaminu 2021)
 // Pola: String imie, nazwisko, double sredniaOcen
 // Comparable: od NAJWYZSZEJ do NAJNIZSZEJ sredniej
@@ -7,15 +11,25 @@ package plan_nauki.tydzien_07;
 
 public class z7_3 {
     public static void main(String[] args) {
-        // TODO: stworz liste uczniow, Collections.sort(), wypisz
-        // Oczekiwany wynik: najwyzsza srednia na gorze
+        ArrayList<Uczen> uczniowie = new ArrayList<>();
+        uczniowie.add(new Uczen("Anna", "Kowalska", 4.5));
+        uczniowie.add(new Uczen("Jan", "Nowak", 3.2));
+        uczniowie.add(new Uczen("Maria", "Wisniewska", 5.0));
+        uczniowie.add(new Uczen("Piotr", "Lewandowski", 4.8));
+
+        Collections.sort(uczniowie);   // uzywa compareTo - najwyzsza srednia na gorze
+
+        System.out.println("Uczniowie od najlepszego:");
+        for (Uczen u : uczniowie) {
+            System.out.println("  " + u);
+        }
     }
 }
 
 class Uczen implements Comparable<Uczen> {
-    private final String imie;
-    private final String nazwisko;
-    private final double sredniaOcen;
+    private String imie;
+    private String nazwisko;
+    private double sredniaOcen;
 
     public Uczen(String imie, String nazwisko, double sredniaOcen) {
         this.imie = imie;
@@ -29,21 +43,26 @@ class Uczen implements Comparable<Uczen> {
 
     @Override
     public int compareTo(Uczen other) {
-        return 0; // TODO: Double.compare(other.sredniaOcen, this.sredniaOcen)
+        return Double.compare(other.sredniaOcen, this.sredniaOcen); // TODO: Double.compare(other.sredniaOcen, this.sredniaOcen)
     }
 
     @Override
     public boolean equals(Object o) {
-        return false; // TODO
+        if (this == o) return true;
+        if (!(o instanceof Uczen)) return false;
+        Uczen a = (Uczen) o;                          // a = rzutowany Uczen
+        return Double.compare(sredniaOcen, a.sredniaOcen) == 0
+            && Objects.equals(imie, a.imie)           // String przez equals
+            && Objects.equals(nazwisko, a.nazwisko);
     }
 
     @Override
     public int hashCode() {
-        return 0; // TODO: Objects.hash(imie, nazwisko, sredniaOcen)
+        return Objects.hash(imie, nazwisko, sredniaOcen);
     }
 
     @Override
     public String toString() {
-        return ""; // TODO: np. "Kowalska Anna (srednia: 4.5)"
+        return nazwisko + " " + imie + " (srednia: " + sredniaOcen + ")";
     }
 }

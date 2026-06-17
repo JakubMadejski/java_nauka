@@ -12,7 +12,7 @@ public class z4_2 {
         System.out.println(a1.getNazwisko());
         System.out.println(a1.getSredia());
         System.out.println(a1);
-        Student a2 = new Student("Kuba", "Madejski", 4.5);
+        new Student("Anna", "Nowak", 3.9);   // drugi student - licznik rosnie do 2
         Student.liczbStworzStudentow();
 
     }

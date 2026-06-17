@@ -262,11 +262,20 @@ a.equals(b)     // DOBRZE - porownuje TRESC -> true
 `==` na obiektach pyta "czy to ten SAM obiekt w pamieci", a nie "czy maja te sama tresc".
 Dlatego na Stringach prawie zawsze chcesz `.equals()`.
 
-**LICZBY (int, double) -> `==` jest OK**
+**LICZBY CALKOWITE (int, long) -> `==`**
 ```java
 int x = 5;
-x == 5          // DOBRZE - prymitywy porownujesz przez ==
+rok == a.rok    // DOBRZE - calkowite porownujesz przez ==
 ```
+
+**LICZBY ULAMKOWE (double, float) -> `Double.compare(a,b) == 0`**
+```java
+Double.compare(cena, a.cena) == 0   // DOBRZE
+cena == a.cena                       // ryzykowne! double ma dziwactwa
+```
+Dlaczego? `0.1 + 0.2` w Javie NIE rowna sie dokladnie `0.3`, wiec `==` na double
+bywa zawodne. `Double.compare` radzi sobie z tym (i z NaN, -0.0).
+To samo `Double.compare` co w compareTo - tam patrzysz na znak, tu na `== 0`.
 
 **ENUM -> `==` jest OK (i zalecane!)**
 ```java
@@ -275,12 +284,13 @@ kategoria == Kategoria.ELEKTRONIKA   // DOBRZE
 Enum ma tylko jedna instancje kazdej wartosci, wiec `==` dziala i jest czytelniejsze.
 
 **Sciaga:**
-| typ              | porownanie     |
-|------------------|----------------|
-| int, double      | `==`           |
-| String           | `.equals()`    |
-| wlasne obiekty   | `.equals()`    |
-| enum             | `==`           |
+| typ              | porownanie               |
+|------------------|--------------------------|
+| int, long        | `==`                     |
+| double, float    | `Double.compare(a,b)==0` |
+| String           | `.equals()` / `Objects.equals()` |
+| wlasne obiekty   | `.equals()`              |
+| enum             | `==`                     |
 
 ## 8. Kolekcje - ktora kiedy (HashMap vs HashSet vs ArrayList)
 
@@ -342,3 +352,34 @@ public int hashCode() {
 **Po co hashCode razem z equals?** HashSet/HashMap najpierw grupuja obiekty po
 hashCode (szybko), potem potwierdzaja equals. Jak dwa obiekty sa rowne ale maja
 rozny hashCode -> HashSet ich nie rozpozna jako duplikaty. Dlatego MUSZA pasowac.
+
+## 10. Kazda klasa dziedziczy po Object (skad sie biora equals/hashCode/toString)
+
+KAZDA klasa w Javie automatycznie dziedziczy po klasie `Object` - nawet jak
+tego nie piszesz:
+```java
+class Produkt { }
+// Java traktuje to jak:  class Produkt extends Object { }
+```
+
+`Object` daje KAZDEJ klasie gotowe metody, ale w slabych domyslnych wersjach:
+- `equals()`   -> domyslnie porownuje ADRES w pamieci (jak ==)
+- `hashCode()` -> domyslnie liczba z adresu pamieci
+- `toString()` -> domyslnie cos brzydkiego: `Produkt@1b6d3586`
+
+Dlatego piszesz `@Override` - ZASTEPUJESZ slaba wersje z Object swoja lepsza.
+Nie tworzysz tych metod od zera, tylko POPRAWIASZ odziedziczone.
+
+**Co trzeba zrobic:**
+- `@Override` nad kazda z tych metod (equals, hashCode, toString)
+- zachowac DOKLADNIE sygnature z Object: `public boolean equals(Object o)`
+
+**Na co uwazac (typowe bledy = od razu widac ze ktos nie ogarnia):**
+- `equals(Punkt o)` zamiast `equals(Object o)` -> NIE nadpisuje, tworzy nowa metode!
+- brak `hashCode` przy nadpisanym `equals` -> zlamany kontrakt
+- Stringi przez `==` zamiast `.equals()`
+- `@Override` krzyczy bledem = znak ze zle nadpisujesz (zla nazwa/typ)
+
+**Regula:** nadpisujesz `equals` -> MUSISZ nadpisac `hashCode`. Zawsze w parze.
+To wlasnie ten zestaw (equals+hashCode+toString+compareTo) profesor sprawdza
+na egzaminie - bo wymaga zrozumienia dziedziczenia, enkapsulacji i kontraktu naraz.

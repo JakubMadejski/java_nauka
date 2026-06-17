@@ -42,12 +42,12 @@ class Samochod extends Pojazd {
         this.liczbaDrzwi = n;
     }
     @Override
-    public String typPojazdu() { 
+    public String typPojazdu() {
         return "Samochod";
     }
     @Override
     public String toString() {
-        return "Prowadze "+typPojazdu();
+        return "Prowadze "+typPojazdu()+", drzwi: "+liczbaDrzwi;
     }
 }
 
@@ -59,12 +59,12 @@ class Rower extends Pojazd {
         this.maGlosnik = n;
     }
     @Override
-    public String typPojazdu() { 
+    public String typPojazdu() {
         return "Rower";
     }
     @Override
     public String toString() {
-        return "Prowadze "+typPojazdu();
+        return "Prowadze "+typPojazdu()+", glosnik: "+maGlosnik;
     }
 }
 
