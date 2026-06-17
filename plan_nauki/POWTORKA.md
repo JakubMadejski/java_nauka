@@ -347,11 +347,35 @@ public int hashCode() {
   x i y, to hashCode tez liczy z x i y.
 - Stringi w equals porownuj przez `Objects.equals(a, b)` (bezpieczne na null),
   liczby przez `==`.
-- `hashCode` to zawsze `Objects.hash(pole1, pole2, ...)`.
+- `hashCode` to zazwyczaj `Objects.hash(pole1, pole2, ...)` (patrz nizej - WAZNE rozroznienie!).
+
+**hashCode - dwa rozne przypadki (NIE myl ich!):**
+- **klasa z polami** (Punkt, Produkt) -> `Objects.hash(pole1, pole2)`
+  ```java
+  return Objects.hash(imie, nazwisko);   // laczy kilka POL w jeden hash
+  ```
+- **suma po elementach kolekcji** (wlasny zbior/lista) -> `element.hashCode()` w petli
+  ```java
+  int sum = 0;
+  for (int i = 0; i < rozmiar; i++) sum += dane[i].hashCode();  // NIE Objects.hash(dane[i])!
+  return sum;
+  ```
+  `Objects.hash(dane[i])` dorzuca zbedne `31 + ...` za kazdym razem. Gdy sumujesz
+  POJEDYNCZE elementy, uzywaj wprost `.hashCode()`.
 
 **Po co hashCode razem z equals?** HashSet/HashMap najpierw grupuja obiekty po
 hashCode (szybko), potem potwierdzaja equals. Jak dwa obiekty sa rowne ale maja
 rozny hashCode -> HashSet ich nie rozpozna jako duplikaty. Dlatego MUSZA pasowac.
+
+**Rzutowanie `o` w equals (czemu `(Iterable<?>) o`, nie samo `o`):**
+`o` wchodzi jako `Object` - nie ma zadnych Twoich metod ani nie da sie po nim
+iterowac. Musisz rzutowac na wlasciwy typ zeby cokolwiek zrobic:
+```java
+Punkt p = (Punkt) o;            // zeby uzyc pol/metod Punktu
+for (Object x : (Iterable<?>) o) // zeby przejsc petla (Object nie jest iterowalny!)
+```
+To ten sam mechanizm: `o` to zawsze `Object`, rzutowanie "odblokowuje" typ.
+`<?>` = "Iterable czegokolwiek" (nie wiemy jaki typ w srodku, elementy bierzemy jako Object).
 
 ## 10. Kazda klasa dziedziczy po Object (skad sie biora equals/hashCode/toString)
 
@@ -383,3 +407,51 @@ Nie tworzysz tych metod od zera, tylko POPRAWIASZ odziedziczone.
 **Regula:** nadpisujesz `equals` -> MUSISZ nadpisac `hashCode`. Zawsze w parze.
 To wlasnie ten zestaw (equals+hashCode+toString+compareTo) profesor sprawdza
 na egzaminie - bo wymaga zrozumienia dziedziczenia, enkapsulacji i kontraktu naraz.
+
+## 11. Rzucanie wyjatkow - throw (NIE return!)
+
+Wyjatek sie RZUCA przez `throw new`, NIGDY nie zwraca przez `return`.
+```java
+if (x == null) {
+    throw new IllegalArgumentException("Osoba nie moze byc null");
+}
+```
+
+**Najczestsze bledy:**
+- `return IllegalArgumentException;`      -> ZLE, nie kompiluje sie
+- `return new IllegalArgumentException()` -> ZLE, wyjatku sie nie zwraca
+- `throw IllegalArgumentException;`       -> ZLE, brakuje `new`
+- `throw new IllegalArgumentException("komunikat");` -> DOBRZE
+
+Schemat ZAWSZE: `throw` + `new` + NazwaWyjatku + `("komunikat")`
+
+Gotowe wyjatki ktore mozesz rzucac:
+- `IllegalArgumentException` - zly argument (null, ujemna liczba, zly zakres)
+- `IllegalStateException`    - zly stan obiektu
+- `ArithmeticException`      - np. dzielenie przez zero
+
+## 12. usun() we wlasnej kolekcji - ZAWSZE przez .equals()
+
+W metodzie `usun(T x)` / `usun(Osoba x)` szukasz elementu przez `.equals()`,
+NIGDY przez `==` (bo elementy to obiekty - patrz sekcja 7):
+```java
+public void usun(T x) {
+    for (int i = 0; i < rozmiar; i++) {
+        if (dane[i].equals(x)) {          // .equals(), NIE ==
+            for (int j = i; j < rozmiar - 1; j++) {
+                dane[j] = dane[j + 1];    // przesun reszte w lewo
+            }
+            rozmiar--;                    // NIE ZAPOMNIJ zmniejszyc!
+            return;                       // usun tylko pierwsze wystapienie
+        }
+    }
+}
+```
+**Dwa bledy ktore robie:** (1) `==` zamiast `.equals()`, (2) brak `rozmiar--`.
+
+To dziala w parze z equals w klasie elementu: kolekcja usuwa przez equals,
+wiec element (Osoba/Produkt) MUSI miec dobry equals. Mozesz wtedy usuwac przez
+NOWY obiekt o tych samych danych: `lista.usun(new Osoba("Jan", "Nowak"))`.
+
+---
+*PDF tej sciagi generuje sie automatycznie po kazdej zmianie.*

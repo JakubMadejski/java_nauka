@@ -1,6 +1,7 @@
 package plan_nauki.tydzien_08;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 // Z8.3 - Lista<Osoba> z egzaminu 2021 (PRAWDZIWE ZADANIE)
 // Lista implementuje Iterable<Osoba>
@@ -8,13 +9,28 @@ import java.util.Iterator;
 
 public class z8_3 {
     public static void main(String[] args) {
-        // TODO: stworz liste, dodaj kilka osob, wypisz
+        Lista lista = new Lista();
+        lista.dodaj(new Osoba("Anna", "Kowalska"));
+        lista.dodaj(new Osoba("Jan", "Nowak"));
+        lista.dodaj(new Osoba("Maria", "Wisniewska"));
+        System.out.println(lista);
+        System.out.println("Liczba osob: " + lista.liczbaOsob());
+
+        lista.usun(new Osoba("Jan", "Nowak"));   // dziala dzieki equals!
+        System.out.println("Po usunieciu Jana:");
+        System.out.println(lista);
+
+        try {
+            lista.dodaj(null);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Blad: " + e.getMessage());
+        }
     }
 }
 
 class Osoba {
-    private final String imie;
-    private final String nazwisko;
+    private String imie;
+    private String nazwisko;
 
     public Osoba(String imie, String nazwisko) {
         this.imie = imie;
@@ -26,17 +42,20 @@ class Osoba {
 
     @Override
     public boolean equals(Object o) {
-        return false; // TODO
+        if (this == o) return true;
+        if (!(o instanceof Osoba)) return false;   // brakowalo tego!
+        Osoba a = (Osoba) o;
+        return Objects.equals(imie, a.imie) && Objects.equals(nazwisko, a.nazwisko);
     }
 
     @Override
     public int hashCode() {
-        return 0; // TODO
+        return Objects.hash(imie, nazwisko);
     }
 
     @Override
     public String toString() {
-        return ""; // TODO
+        return imie + " " + nazwisko;
     }
 }
 
@@ -45,11 +64,23 @@ class Lista implements Iterable<Osoba> {
     private int rozmiar = 0;
 
     public void dodaj(Osoba x) {
-        // TODO: null -> IllegalArgumentException
+        if (x == null) {
+            throw new IllegalArgumentException("Osoba nie moze byc null");
+        }
+        dane[rozmiar] = x;
+        rozmiar++;
     }
 
     public void usun(Osoba x) {
-        // TODO
+        for (int i = 0; i<rozmiar; i++) {
+            if (dane[i].equals(x)) {   // obiekty przez equals, NIE ==
+                for (int j = i; j < rozmiar - 1; j++) {
+                    dane[j] = dane[j+1];
+                }
+                rozmiar--;              // brakowalo!
+                return;
+            }
+        }
     }
 
     public int liczbaOsob() { return rozmiar; }

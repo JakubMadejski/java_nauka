@@ -8,7 +8,30 @@ import java.util.Iterator;
 
 public class z8_2 {
     public static void main(String[] args) {
-        // TODO: przetestuj MojaLista<String> i MojaLista<Integer>
+        // ta sama klasa dziala dla String...
+        MojaLista<String> slowa = new MojaLista<>();
+        slowa.dodaj("Ala");
+        slowa.dodaj("ma");
+        slowa.dodaj("kota");
+        System.out.println(slowa);       // [Ala, ma, kota]
+        slowa.usun("ma");
+        System.out.println(slowa);       // [Ala, kota]
+
+        // ...i dla Integer
+        MojaLista<Integer> liczby = new MojaLista<>();
+        liczby.dodaj(1);
+        liczby.dodaj(2);
+        liczby.dodaj(3);
+        System.out.println(liczby);      // [1, 2, 3]
+
+        for (String s : slowa) {         // for-each dziala dzieki Iterable
+            System.out.print(s + " ");
+        }
+        System.out.println();
+        for (int s : liczby) {         // for-each dziala dzieki Iterable
+            System.out.print(s + " ");
+        }
+        System.out.println();
     }
 }
 
@@ -17,11 +40,20 @@ class MojaLista<T> implements Iterable<T> {
     private int rozmiar = 0;
 
     public void dodaj(T x) {
-        // TODO
+        dane[rozmiar] = x;
+        rozmiar++;
     }
 
     public void usun(T x) {
-        // TODO
+        for (int i = 0; i < rozmiar; i++) {
+            if (dane[i].equals(x)) {   // obiekty przez equals, NIE ==
+                for (int j = i; j < rozmiar - 1; j++) {
+                    dane[j] = dane[j+1];
+                }
+                rozmiar--;
+                return;
+            }
+        }
     }
 
     public int rozmiar() { return rozmiar; }
@@ -30,14 +62,21 @@ class MojaLista<T> implements Iterable<T> {
     public Iterator<T> iterator() {
         return new Iterator<T>() {
             int idx = 0;
-            public boolean hasNext() { return idx < rozmiar; }
+            public boolean hasNext() { 
+                return idx < rozmiar; }
             @SuppressWarnings("unchecked")
-            public T next() { return (T) dane[idx++]; }
+            public T next() { 
+                return (T) dane[idx++]; }
         };
     }
 
     @Override
     public String toString() {
-        return ""; // TODO
+        String wynik = "[";
+        for (int i = 0; i < rozmiar; i++) {
+            if (i > 0) wynik = wynik + ", ";
+            wynik = wynik + dane[i];
+        }
+        return wynik + "]";
     }
 }
